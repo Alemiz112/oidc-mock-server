@@ -4,9 +4,7 @@ on: [push]
 
 jobs:
   build-and-deploy:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
@@ -18,10 +16,29 @@ jobs:
           npm install
           npm run-script lint
 
-      - name: Build and publish Docker image
+      - name: Docker Login
+        uses: docker/login-action@v1
         if: github.ref == 'refs/heads/main'
-        uses: elgohr/Publish-Docker-Github-Action@33a481be3e179353cb7793a92b57cf9a6c985860 # v4
         with:
-          name: gridsuite/oidc-mock-server
-          username: gridsuiteci
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: "ghcr.io"
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          images: "ghcr.io/${{ github.repository }}"
+          tags: |
+            type=ref,event=branch
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+
+      - name: Docker build and push
+        uses: docker/build-push-action@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
