@@ -49,7 +49,11 @@ const oidcConfig = {
   async findAccount(ctx, id) {
     return {
       accountId: id,
-      async claims() { return { sub: id, name: id, email: id + domain, groups: userGroups}; },
+      async claims() {
+        return {
+          sub: id, name: id, email: id + domain, groups: userGroups
+        };
+      },
     };
   },
   claims: {
