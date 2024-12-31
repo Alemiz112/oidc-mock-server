@@ -26,6 +26,7 @@ services:
       - CLIENT_ID=my-client
       - CLIENT_REDIRECT_URI=http://localhost:8080/cb
       - CLIENT_LOGOUT_REDIRECT_URI=http://localhost:8080
+      - USER_GROUPS=admin,user
     ports:
       - 9090:9090
 ```

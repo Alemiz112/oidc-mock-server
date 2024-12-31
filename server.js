@@ -40,16 +40,21 @@ const host = process.env.ISSUER_HOST || 'localhost';
 const prefix = process.env.ISSUER_PREFIX || '/';
 const domain = process.env.EMAIL_DOMAIN || '@domain.com';
 
+const userGroups = [];
+if (process.env.USER_GROUPS) {
+  userGroups.push(...process.env.USER_GROUPS.split(','));
+}
+
 const oidcConfig = {
   async findAccount(ctx, id) {
     return {
       accountId: id,
-      async claims() { return { sub: id, name: id, email: id + domain }; },
+      async claims() { return { sub: id, name: id, email: id + domain, groups: userGroups}; },
     };
   },
   claims: {
     openid: [
-      'sub', 'name', 'email'
+      'sub', 'name', 'email', 'groups'
     ],
   },
   responseTypes: ['id_token token', 'code'],
