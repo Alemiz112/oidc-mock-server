@@ -51,13 +51,15 @@ const oidcConfig = {
     openid: [
       'sub', 'name', 'email'
     ],
+    profile: ['groups']
   },
+  scopes: ['openid', 'profile', 'email', 'offline_access'], // Add offline_access
   responseTypes: ['id_token token', 'code'],
   clients: clientConfigs.map(clientConfig => ({
     client_id: clientConfig.clientId,
     redirect_uris: clientConfig.redirect_uris,
     response_types: ['id_token token', 'code'],
-    grant_types: ['implicit', 'authorization_code'],
+    grant_types: ['implicit', 'authorization_code', 'refresh_token'],
     token_endpoint_auth_method: 'none',
     post_logout_redirect_uris: [clientConfig.clientLogoutRedirectUri]
   }))
