@@ -9,7 +9,8 @@
   },
   "scripts": {
     "lint": "eslint *.js",
-    "start": "node --env-file=.env server.js"
+    "start": "node server.js",
+    "dev-start": "node --env-file=.env server.js"
   },
   "dependencies": {
     "koa": "^2.11.0",
