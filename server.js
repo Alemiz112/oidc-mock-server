@@ -62,12 +62,13 @@ const oidcConfig = {
     ],
     profile: ['groups']
   },
+  scopes: ['openid', 'profile', 'email', 'groups'],
   responseTypes: ['id_token token', 'code'],
   clients: clientConfigs.map(clientConfig => ({
     client_id: clientConfig.clientId,
     redirect_uris: clientConfig.redirect_uris,
     response_types: ['id_token token', 'code'],
-    grant_types: ['implicit', 'authorization_code'],
+    grant_types: ['implicit', 'authorization_code', 'urn:ietf:params:oauth:grant-type:device_code'],
     token_endpoint_auth_method: 'none',
     introspection_endpoint_auth_method: 'client_secret_post',
     post_logout_redirect_uris: [clientConfig.clientLogoutRedirectUri],
@@ -75,6 +76,9 @@ const oidcConfig = {
   })),
   features: {
     introspection: {
+      enabled: true
+    },
+    deviceFlow: {
       enabled: true
     }
   }
